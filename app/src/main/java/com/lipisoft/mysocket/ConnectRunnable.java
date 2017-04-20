@@ -12,7 +12,7 @@ class ConnectRunnable implements Runnable {
 
     @Override
     public void run() {
-        SocketAddress socket = new InetSocketAddress("cdnimg.melon.co.kr", 80);
+        SocketAddress socket = new InetSocketAddress("www.google.co.kr", 80);
         try {
             SocketChannel channel = SocketChannel.open(socket);
 
