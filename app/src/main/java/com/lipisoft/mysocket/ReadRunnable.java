@@ -17,16 +17,28 @@ class ReadRunnable implements Runnable {
         if (channel != null) {
             final ByteBuffer resHttp = ByteBuffer.allocate(2048);
             try {
-                channel.read(resHttp);
+                int numberReceived = channel.read(resHttp);
+
+                while (numberReceived > 0) {
+                    resHttp.flip();
+
+                    final byte[] response = new byte[numberReceived];
+                    resHttp.get(response);
+
+                    Log.d(TAG, new String(response));
+
+                    resHttp.clear();
+                    numberReceived = channel.read(resHttp);
+                }
+                Log.d(TAG, "Received Bytes: " + numberReceived);
+
+                // When the remote server sends FIN,
+                if (numberReceived == -1) {
+                    channel.close();
+                }
             } catch (IOException e) {
                 Log.e(TAG, "failed to read.");
             }
-            resHttp.flip();
-
-            final byte[] response = new byte[2048];
-            resHttp.get(response);
-
-            Log.d(TAG, new String(response));
         } else {
             Log.e(TAG, "SocketChannel is not valid.");
         }
