@@ -11,16 +11,24 @@ class ReadRunnable implements Runnable {
 
     @Override
     public void run() {
-        ByteBuffer resHttp = ByteBuffer.allocate(2048);
-        SocketChannel channel = MySocketManager.getInstance().getChannel();
-        try {
-            channel.read(resHttp);
-        } catch (IOException e) {
-            Log.e(TAG, "failed to read.");
+        final MySocketManager mySocketManager = MySocketManager.getInstance();
+        final SocketChannel channel = mySocketManager.getChannel();
+
+        if (channel != null) {
+            final ByteBuffer resHttp = ByteBuffer.allocate(2048);
+            try {
+                channel.read(resHttp);
+            } catch (IOException e) {
+                Log.e(TAG, "failed to read.");
+            }
+            resHttp.flip();
+
+            final byte[] response = new byte[2048];
+            resHttp.get(response);
+
+            Log.d(TAG, new String(response));
+        } else {
+            Log.e(TAG, "SocketChannel is not valid.");
         }
-        resHttp.flip();
-        byte[] response = new byte[40];
-        resHttp.get(response);
-        Log.d(TAG, new String(response));
     }
 }

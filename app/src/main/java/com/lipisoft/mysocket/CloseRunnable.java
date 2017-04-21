@@ -10,11 +10,18 @@ class CloseRunnable implements Runnable {
 
     @Override
     public void run() {
-        SocketChannel channel = MySocketManager.getInstance().getChannel();
-        try {
-            channel.close();
-        } catch (IOException e) {
-            Log.e(TAG, "failed to close.", e);
+        final MySocketManager mySocketManager = MySocketManager.getInstance();
+        final SocketChannel channel = mySocketManager.getChannel();
+
+        if (channel != null) {
+            try {
+                channel.close();
+            } catch (IOException e) {
+                Log.e(TAG, "failed to close.", e);
+            }
+            mySocketManager.setChannel(null);
+        } else {
+            Log.e(TAG, "SocketChannel is not valid.");
         }
     }
 }
