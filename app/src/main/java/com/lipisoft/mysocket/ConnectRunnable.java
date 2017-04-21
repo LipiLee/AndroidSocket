@@ -12,10 +12,11 @@ class ConnectRunnable implements Runnable {
 
     @Override
     public void run() {
-        final SocketAddress socket = new InetSocketAddress("www.google.com", 80);
+        final SocketAddress socket = new InetSocketAddress("m.play.melon.com", 80);
 
         try {
             final SocketChannel channel = SocketChannel.open(socket);
+            channel.configureBlocking(MySocketManager.getInstance().isBlockingMode());
             MySocketManager.getInstance().setChannel(channel);
         } catch (IOException e) {
             Log.e(TAG, "failed to connect.");

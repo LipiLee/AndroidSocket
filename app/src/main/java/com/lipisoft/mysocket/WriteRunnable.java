@@ -18,7 +18,7 @@ class WriteRunnable implements Runnable {
         if (channel != null) {
             final String request = "GET / HTTP/1.1\r\n";
             final String userAgent = "User-Agent: Android 6.0.1; SM-G900S\r\n";
-            String host = "Host: www.google.com\r\n";
+            String host = "Host: m.play.melon.com\r\n";
 //            String connectionMode = "Connection: Keep-Alive\r\n";
             String end = "\r\n";
 
