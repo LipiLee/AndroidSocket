@@ -13,12 +13,13 @@ import java.nio.channels.SocketChannel;
 
 class SocketRunnable implements Runnable {
     private static final String TAG = "SocketRunnable";
-    static Handler handler;
+    private Handler handler;
     private SocketChannel channel;
 
     @Override
     public void run() {
         Looper.prepare();
+
         handler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -40,6 +41,7 @@ class SocketRunnable implements Runnable {
                 }
             }
         };
+
         Looper.loop();
     }
 
@@ -121,5 +123,9 @@ class SocketRunnable implements Runnable {
         } else {
             Log.e(TAG, "SocketChannel is not valid.");
         }
+    }
+
+    Handler getHandler() {
+        return handler;
     }
 }

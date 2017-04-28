@@ -1,6 +1,7 @@
 package com.lipisoft.mysocket;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -13,7 +14,9 @@ public class MainActivity extends AppCompatActivity {
     public static final int READ = 2;
     public static final int CLOSE = 3;
 
-    private boolean isBlockingMode;
+    private static boolean isBlockingMode;
+    private static final SocketRunnable runnable = new SocketRunnable();
+    private static Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,32 +27,32 @@ public class MainActivity extends AppCompatActivity {
 
         toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton v, boolean isChecked) {
-//                MySocketManager.getInstance().setBlockingMode(isChecked);
                 isBlockingMode = isChecked;
             }
         });
 
-        final Thread myThread = new Thread(new SocketRunnable());
+        final Thread myThread = new Thread(runnable);
         myThread.start();
     }
 
     public void onConnect(View v) {
-        final Message message = SocketRunnable.handler.obtainMessage(CONNECT, isBlockingMode);
+        handler = runnable.getHandler();
+        final Message message = handler.obtainMessage(CONNECT, isBlockingMode);
         message.sendToTarget();
     }
 
     public void onWrite(View v) {
-        final Message message = SocketRunnable.handler.obtainMessage(WRITE, isBlockingMode);
+        final Message message = handler.obtainMessage(WRITE, isBlockingMode);
         message.sendToTarget();
     }
 
     public void onRead(View v) {
-        final Message message = SocketRunnable.handler.obtainMessage(READ, isBlockingMode);
+        final Message message = handler.obtainMessage(READ, isBlockingMode);
         message.sendToTarget();
     }
 
     public void onClose(View v) {
-        final Message message = SocketRunnable.handler.obtainMessage(CLOSE, isBlockingMode);
+        final Message message = handler.obtainMessage(CLOSE, isBlockingMode);
         message.sendToTarget();
     }
 }
