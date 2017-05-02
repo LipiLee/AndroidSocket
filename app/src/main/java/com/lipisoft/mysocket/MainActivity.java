@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
+import java.nio.channels.SocketChannel;
+
 public class MainActivity extends AppCompatActivity {
     public static final int CONNECT = 0;
     public static final int WRITE = 1;
@@ -15,8 +17,15 @@ public class MainActivity extends AppCompatActivity {
     public static final int CLOSE = 3;
 
     private static boolean isBlockingMode;
-    private static final SocketRunnable runnable = new SocketRunnable();
-    private static Handler handler;
+    private static final SocketConnectWrite writeRunnable = new SocketConnectWrite();
+    private static final SocketReadClose readRunnable = new SocketReadClose();
+    private static final SocketClose closeRunnable = new SocketClose();
+
+    private static Handler writeHandler;
+    private static Handler readHandler;
+    private static Handler closeHandler;
+
+    private static SocketChannel channel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,28 +40,37 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        final Thread myThread = new Thread(runnable);
-        myThread.start();
+        final Thread writeThread = new Thread(writeRunnable);
+        writeThread.start();
+
+        final Thread readThread = new Thread(readRunnable);
+        readThread.start();
+
+        final Thread closeThread = new Thread(closeRunnable);
+        closeThread.start();
     }
 
     public void onConnect(View v) {
-        handler = runnable.getHandler();
-        final Message message = handler.obtainMessage(CONNECT, isBlockingMode);
+        writeHandler = writeRunnable.getHandler();
+        final Message message = writeHandler.obtainMessage(CONNECT, isBlockingMode);
         message.sendToTarget();
     }
 
     public void onWrite(View v) {
-        final Message message = handler.obtainMessage(WRITE, isBlockingMode);
+        channel = writeRunnable.getChannel();
+        final Message message = writeHandler.obtainMessage(WRITE);
         message.sendToTarget();
     }
 
     public void onRead(View v) {
-        final Message message = handler.obtainMessage(READ, isBlockingMode);
+        readHandler = readRunnable.getHandler();
+        final Message message = readHandler.obtainMessage(READ, channel);
         message.sendToTarget();
     }
 
     public void onClose(View v) {
-        final Message message = handler.obtainMessage(CLOSE, isBlockingMode);
+        closeHandler = closeRunnable.getHandler();
+        final Message message = closeHandler.obtainMessage(CLOSE, channel);
         message.sendToTarget();
     }
 }
