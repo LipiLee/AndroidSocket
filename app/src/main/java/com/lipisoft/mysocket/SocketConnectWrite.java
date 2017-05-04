@@ -65,8 +65,7 @@ class SocketConnectWrite implements Runnable {
 //            final String message = request + userAgent + host + connectionMode + end;
             final String httpHeader = request + userAgent + host + end;
 
-
-            final ByteBuffer httpGet = ByteBuffer.allocate(2048);
+            final ByteBuffer httpGet = ByteBuffer.allocate(httpHeader.length());
             httpGet.put(httpHeader.getBytes());
             httpGet.flip();
 
