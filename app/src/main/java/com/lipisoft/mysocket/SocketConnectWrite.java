@@ -31,6 +31,9 @@ class SocketConnectWrite implements Runnable {
                     case MainActivity.WRITE:
                         write();
                         break;
+                    default:
+                        Log.d(TAG, "Only CONNECT or WRITE message can be handled in SocketConnectWrite Runnable.");
+                        break;
                 }
             }
         };

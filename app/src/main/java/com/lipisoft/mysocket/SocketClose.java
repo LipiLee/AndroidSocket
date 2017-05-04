@@ -25,6 +25,9 @@ class SocketClose implements Runnable {
                         channel = (SocketChannel) msg.obj;
                         close();
                         break;
+                    default:
+                        Log.d(TAG, "Only CLOSE message can be handled in SocketClose Runnable.");
+                        break;
                 }
             }
         };
@@ -35,7 +38,6 @@ class SocketClose implements Runnable {
     private void close() {
         if (channel != null) {
             try {
-//                channel.shutdownInput();
                 channel.close();
             } catch (IOException e) {
                 Log.e(TAG, "failed to close.", e);

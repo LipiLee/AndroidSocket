@@ -21,10 +21,6 @@ public class MainActivity extends AppCompatActivity {
     private static final SocketReadClose readRunnable = new SocketReadClose();
     private static final SocketClose closeRunnable = new SocketClose();
 
-    private static Handler writeHandler;
-    private static Handler readHandler;
-    private static Handler closeHandler;
-
     private static SocketChannel channel;
 
     @Override
@@ -51,25 +47,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onConnect(View v) {
-        writeHandler = writeRunnable.getHandler();
+        final Handler writeHandler = writeRunnable.getHandler();
         final Message message = writeHandler.obtainMessage(CONNECT, isBlockingMode);
         message.sendToTarget();
     }
 
     public void onWrite(View v) {
+        final Handler writeHandler = writeRunnable.getHandler();
         channel = writeRunnable.getChannel();
         final Message message = writeHandler.obtainMessage(WRITE);
         message.sendToTarget();
     }
 
     public void onRead(View v) {
-        readHandler = readRunnable.getHandler();
+        final Handler readHandler = readRunnable.getHandler();
         final Message message = readHandler.obtainMessage(READ, channel);
         message.sendToTarget();
     }
 
     public void onClose(View v) {
-        closeHandler = closeRunnable.getHandler();
+        final Handler closeHandler = closeRunnable.getHandler();
         final Message message = closeHandler.obtainMessage(CLOSE, channel);
         message.sendToTarget();
     }

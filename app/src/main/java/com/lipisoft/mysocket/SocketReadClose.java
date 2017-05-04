@@ -26,6 +26,10 @@ class SocketReadClose implements Runnable {
                         channel = (SocketChannel) msg.obj;
                         read();
                         break;
+                    default:
+                        Log.d(TAG, "Only READ message can be handled in SocketReadClose Runnable.");
+                        break;
+
                 }
             }
         };
